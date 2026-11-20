@@ -1,0 +1,200 @@
+/* ==========================================================================
+   ATOMIC BOHR VISUALIZER STYLING
+   Holographic Atomic Nucleus & Revolving Electrons Animation
+   ========================================================================== */
+
+.atom-visualizer-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  width: 100%;
+  user-select: none;
+}
+
+.atom-svg {
+  display: block;
+  overflow: visible;
+  filter: drop-shadow(0 0 12px rgba(0, 0, 0, 0.7));
+}
+
+/* Energy Corona Pulse */
+.atom-corona-pulse {
+  animation: coronaBreathe 3s ease-in-out infinite alternate;
+  transform-origin: 0px 0px;
+}
+
+@keyframes coronaBreathe {
+  0% {
+    transform: scale(0.9);
+    opacity: 0.4;
+  }
+  100% {
+    transform: scale(1.15);
+    opacity: 0.85;
+  }
+}
+
+/* Central Nucleus Core */
+.atomic-nucleus-group {
+  cursor: default;
+}
+
+.nucleus-core {
+  animation: nucleusGlowPulse 2.4s ease-in-out infinite alternate;
+  transform-origin: 0px 0px;
+}
+
+@keyframes nucleusGlowPulse {
+  0% {
+    stroke-width: 1.5;
+    opacity: 0.92;
+  }
+  100% {
+    stroke-width: 2.8;
+    opacity: 1;
+    filter: drop-shadow(0 0 8px currentColor);
+  }
+}
+
+/* Orbit Track Line */
+.orbit-track {
+  transition: stroke-opacity 0.2s ease, stroke-width 0.2s ease;
+}
+
+.orbit-shell-group:hover .orbit-track {
+  stroke-opacity: 0.85;
+  stroke-width: 1.8;
+}
+
+.shell-letter-tag {
+  pointer-events: none;
+  opacity: 0.65;
+  transition: opacity 0.2s ease;
+}
+
+.orbit-shell-group:hover .shell-letter-tag {
+  opacity: 1;
+  fill-opacity: 1;
+}
+
+/* Smooth Real-time Rotation of Electron Shells */
+.electrons-revolving-ring.rev-clock {
+  animation: rotateClockwise linear infinite;
+}
+
+.electrons-revolving-ring.rev-counter {
+  animation: rotateCounterClockwise linear infinite;
+}
+
+@keyframes rotateClockwise {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes rotateCounterClockwise {
+  from {
+    transform: rotate(360deg);
+  }
+  to {
+    transform: rotate(0deg);
+  }
+}
+
+/* ==========================================================================
+   SHELLS & PARTICLES HUD LEGEND UNDERNEATH
+   ========================================================================== */
+
+.atom-shells-legend {
+  margin-top: 10px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.legend-pills-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+}
+
+.shell-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 7px;
+  background: rgba(2, 18, 34, 0.85);
+  border: 1px solid rgba(45, 226, 230, 0.4);
+  border-radius: 4px;
+  font-size: 11px;
+  font-family: monospace;
+  box-shadow: 0 0 6px rgba(0, 0, 0, 0.5);
+  transition: all 0.15s ease;
+}
+
+.shell-pill:hover {
+  background: rgba(45, 226, 230, 0.15);
+  border-color: #2de2e6;
+  transform: translateY(-1px);
+}
+
+.atom-visualizer-container.nonmetal .shell-pill {
+  border-color: rgba(255, 79, 163, 0.4);
+}
+.atom-visualizer-container.nonmetal .shell-pill:hover {
+  background: rgba(255, 79, 163, 0.15);
+  border-color: #ff4fa3;
+}
+
+.atom-visualizer-container.noble .shell-pill {
+  border-color: rgba(255, 200, 61, 0.4);
+}
+.atom-visualizer-container.noble .shell-pill:hover {
+  background: rgba(255, 200, 61, 0.15);
+  border-color: #ffc83d;
+}
+
+.shell-pill-name {
+  color: #38bdf8;
+  font-weight: 700;
+}
+.atom-visualizer-container.nonmetal .shell-pill-name { color: #f472b6; }
+.atom-visualizer-container.noble .shell-pill-name { color: #facc15; }
+
+.shell-pill-count {
+  color: #f1f5f9;
+}
+
+.legend-particles-meta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  font-size: 11px;
+  font-family: monospace;
+}
+
+.part-meta-tag {
+  padding: 2px 6px;
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #cbd5e1;
+}
+
+.part-meta-tag b {
+  color: #ffffff;
+}
+
+.part-p { border-color: rgba(56, 189, 248, 0.35); color: #7dd3fc; }
+.part-n { border-color: rgba(148, 163, 184, 0.35); color: #cbd5e1; }
+.part-e { border-color: rgba(244, 114, 182, 0.35); color: #f472b6; }

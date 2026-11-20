@@ -1,0 +1,788 @@
+/* ==========================================================================
+   HOLOGRAPHIC PERIODIC TABLE STYLING
+   Spaceship Command Deck Hologram Interface
+   ========================================================================== */
+
+/* The Main Hologram Panel */
+.hologram-panel {
+  position: absolute;
+  left: 14%;
+  top: 3.5%;
+  width: 84%;
+  height: 89%;
+  
+  /* 3D perspective tilt: left edge is closest and tallest, right slopes down/up */
+  transform: perspective(1600px) rotateY(18deg) rotateX(1deg);
+  transform-origin: left center;
+  transform-style: preserve-3d;
+
+  /* Hologram glass aesthetic with glowing cyan border and outer bloom */
+  background: rgba(0, 30, 50, 0.38);
+  backdrop-filter: blur(2.5px);
+  -webkit-backdrop-filter: blur(2.5px);
+  border: 1.5px solid rgba(45, 226, 230, 0.85);
+  border-radius: 14px;
+  box-shadow: 
+    0 0 35px rgba(45, 226, 230, 0.35),
+    inset 0 0 25px rgba(45, 226, 230, 0.12),
+    0 12px 40px rgba(0, 0, 0, 0.65);
+
+  display: flex;
+  flex-direction: column;
+  padding: 1cqh 1.2cqw;
+  overflow: hidden;
+  z-index: 10;
+  box-sizing: border-box;
+  transition: transform 0.25s ease, top 0.25s ease, height 0.25s ease;
+}
+
+/* 4 Luminous Corner Markers giving depth to the glass panel */
+.corner-marker {
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  border-color: #2de2e6;
+  border-style: solid;
+  pointer-events: none;
+  filter: drop-shadow(0 0 6px #2de2e6);
+  z-index: 25;
+}
+.corner-tl { top: 4px; left: 4px; border-width: 3px 0 0 3px; border-top-left-radius: 10px; }
+.corner-tr { top: 4px; right: 4px; border-width: 3px 3px 0 0; border-top-right-radius: 10px; }
+.corner-bl { bottom: 4px; left: 4px; border-width: 0 0 3px 3px; border-bottom-left-radius: 10px; }
+.corner-br { bottom: 4px; right: 4px; border-width: 0 3px 3px 0; border-bottom-right-radius: 10px; }
+
+/* ==========================================================================
+   HEADER BAR
+   ========================================================================== */
+
+.holo-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 4.5cqh;
+  border-bottom: 1px solid rgba(45, 226, 230, 0.35);
+  padding-bottom: 0.4cqh;
+  margin-bottom: 0.4cqh;
+  flex-shrink: 0;
+}
+
+.holo-icons {
+  display: flex;
+  align-items: center;
+  gap: 0.4cqw;
+  width: 9cqw;
+}
+
+.icon-badge {
+  width: 1.3cqw;
+  height: 1.3cqw;
+  min-width: 20px;
+  min-height: 20px;
+  border: 1px solid rgba(45, 226, 230, 0.65);
+  border-radius: 4px;
+  background: rgba(45, 226, 230, 0.12);
+  color: #2de2e6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3px;
+  box-shadow: 0 0 8px rgba(45, 226, 230, 0.25);
+}
+
+.holo-title {
+  font-family: 'Orbitron', 'Chakra Petch', sans-serif;
+  font-size: 1.25cqw;
+  font-weight: 800;
+  letter-spacing: 0.16cqw;
+  color: #2de2e6;
+  text-shadow: 0 0 14px rgba(45, 226, 230, 0.8), 0 0 25px rgba(45, 226, 230, 0.4);
+  text-align: center;
+  flex: 1;
+  white-space: nowrap;
+}
+
+.holo-indicators {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.5cqw;
+  width: 9cqw;
+}
+
+.telemetry-bar {
+  width: 2.8cqw;
+  height: 3px;
+  background: linear-gradient(90deg, #2de2e6, transparent);
+  border-radius: 1px;
+}
+
+.dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+}
+.dot-amber { background: #ffc83d; box-shadow: 0 0 8px #ffc83d; }
+.dot-cyan { background: #2de2e6; box-shadow: 0 0 8px #2de2e6; }
+
+/* ==========================================================================
+   UPPER VOID ZONE: CARBON CALLOUT OR SELECTED ELEMENT DETAILS
+   ========================================================================== */
+
+.callout-display-zone {
+  position: absolute;
+  top: 5.2cqh;
+  left: 42%;
+  transform: translateX(-50%);
+  width: 25cqw;
+  height: 14cqh;
+  z-index: 30;
+  pointer-events: none;
+}
+
+.carbon-callout-cluster {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Center Carbon Box */
+.carbon-box {
+  position: relative;
+  width: 4.4cqw;
+  aspect-ratio: 1 / 0.95;
+  border: 1.5px solid #ff4fa3;
+  border-radius: 4px;
+  background: rgba(255, 79, 163, 0.16);
+  box-shadow: 0 0 20px rgba(255, 79, 163, 0.5), inset 0 0 10px rgba(255, 79, 163, 0.15);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  padding: 3px 2px 4px 2px;
+  box-sizing: border-box;
+  z-index: 5;
+}
+
+.carbon-num {
+  align-self: flex-start;
+  padding-left: 3px;
+  font-size: 0.55cqw;
+  font-weight: 700;
+  color: #ff4fa3;
+  line-height: 1;
+}
+
+.carbon-sym {
+  font-family: 'Chakra Petch', sans-serif;
+  font-size: 1.85cqw;
+  font-weight: 700;
+  color: #ffffff;
+  line-height: 1;
+  text-shadow: 0 0 10px #ff4fa3;
+}
+
+.carbon-name {
+  font-size: 0.62cqw;
+  font-weight: 600;
+  color: #ffd6ec;
+  line-height: 1;
+}
+
+.carbon-mass {
+  font-size: 0.5cqw;
+  color: #ff94cb;
+  line-height: 1;
+}
+
+/* Pointer Items */
+.pointer-item {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  z-index: 10;
+}
+
+/* Left items: pill on left, line on right extending into box */
+.item-atomic-num {
+  right: calc(50% + 2.2cqw);
+  top: 1.6cqh;
+}
+
+.item-mass {
+  right: calc(50% + 2.2cqw);
+  bottom: 1.6cqh;
+}
+
+/* Right items: line on left extending into box, pill on right */
+.item-symbol {
+  left: calc(50% + 2.2cqw);
+  top: 3.8cqh;
+}
+
+.item-name {
+  left: calc(50% + 2.2cqw);
+  bottom: 3.6cqh;
+}
+
+/* Pill badge matching reference */
+.pointer-pill {
+  border: 1.2px solid #2de2e6;
+  border-radius: 999px;
+  background: rgba(0, 30, 50, 0.9);
+  box-shadow: 0 0 10px rgba(45, 226, 230, 0.4), inset 0 0 6px rgba(45, 226, 230, 0.2);
+  padding: 2px 9px;
+  font-size: 0.52cqw;
+  font-weight: 600;
+  color: #2de2e6;
+  white-space: nowrap;
+  letter-spacing: 0.02cqw;
+  flex-shrink: 0;
+}
+
+/* Short solid glowing cyan connecting lines */
+.pointer-line {
+  height: 1.5px;
+  background: #2de2e6;
+  box-shadow: 0 0 6px #2de2e6, 0 0 10px rgba(45, 226, 230, 0.6);
+}
+
+/* Specific line lengths to penetrate purple box and touch 6, 12, C, Carbon */
+.item-atomic-num .pointer-line {
+  width: 1.6cqw;
+  margin-right: -0.7cqw; /* Crosses into the box right to number 6 */
+}
+
+.item-mass .pointer-line {
+  width: 2.2cqw;
+  margin-right: -1.3cqw; /* Crosses into the box right to number 12 */
+}
+
+.item-symbol .pointer-line {
+  width: 1.6cqw;
+  margin-left: -0.7cqw; /* Crosses into the box right to symbol C */
+}
+
+.item-name .pointer-line {
+  width: 1.5cqw;
+  margin-left: -0.6cqw; /* Crosses into the box right to name Carbon */
+}
+
+/* Interactive Selected Element Card (replaces Carbon callout on click) */
+.selected-detail-card {
+  pointer-events: auto;
+  position: absolute;
+  inset: 0cqh 1cqw;
+  background: rgba(2, 20, 38, 0.96);
+  border-radius: 8px;
+  padding: 0.8cqh 1.2cqw;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-shadow: 0 4px 25px rgba(0, 0, 0, 0.85);
+  z-index: 50;
+}
+
+.selected-detail-card.metal { border: 1.5px solid #2de2e6; box-shadow: 0 0 20px rgba(45, 226, 230, 0.5); }
+.selected-detail-card.nonmetal { border: 1.5px solid #ff4fa3; box-shadow: 0 0 20px rgba(255, 79, 163, 0.5); }
+.selected-detail-card.noble { border: 1.5px solid #ffc83d; box-shadow: 0 0 20px rgba(255, 200, 61, 0.5); }
+
+.detail-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+  padding-bottom: 4px;
+}
+
+.detail-tag {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 0.54cqw;
+  color: #2de2e6;
+  letter-spacing: 1px;
+  font-weight: 700;
+}
+
+.detail-close-btn {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  color: #fff;
+  border-radius: 4px;
+  font-size: 0.45cqw;
+  padding: 2px 8px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.detail-close-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: #fff;
+}
+
+.detail-body {
+  display: flex;
+  align-items: center;
+  gap: 1.2cqw;
+}
+
+.detail-badge-box {
+  width: 3.8cqw;
+  aspect-ratio: 1 / 0.95;
+  border: 1.5px solid currentColor;
+  border-radius: 4px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  padding: 3px 2px 4px 2px;
+  position: relative;
+  background: rgba(255, 255, 255, 0.06);
+  flex-shrink: 0;
+}
+.badge-num { align-self: flex-start; padding-left: 2px; font-size: 0.48cqw; font-weight: 700; }
+.badge-sym { font-family: 'Chakra Petch', sans-serif; font-size: 1.5cqw; font-weight: 700; color: #fff; }
+
+.detail-info {
+  flex: 1;
+}
+.info-name-vi {
+  font-size: 0.85cqw;
+  font-weight: 700;
+  color: #fff;
+}
+.info-name-vi small {
+  font-size: 0.6cqw;
+  color: #94a3b8;
+  font-weight: normal;
+}
+.info-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3px 10px;
+  margin-top: 5px;
+  font-size: 0.52cqw;
+  color: #cbd5e1;
+}
+.info-grid b { color: #fff; }
+
+/* ==========================================================================
+   MAIN TABLE GRID & WRAPPER
+   ========================================================================== */
+
+.table-stage-grid {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  min-height: 0;
+  gap: 1.2cqh;
+}
+
+/* Vertical "Chu kỳ" label */
+.period-vertical-strip {
+  position: absolute;
+  top: 3.2cqh;
+  left: -1.1cqw;
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  font-size: 0.52cqw;
+  color: #2de2e6;
+  letter-spacing: 0.12cqw;
+  font-weight: 700;
+  text-shadow: 0 0 6px #2de2e6;
+}
+
+/* Main 18 Columns Grid: auto rows driven by cell aspect-ratio: 1 / 0.95 */
+.elements-18-grid {
+  display: grid;
+  grid-template-columns: repeat(18, 1fr);
+  gap: 4px;
+  width: 100%;
+}
+
+/* Group Column Headers positioned at their exact period levels */
+.group-col-header {
+  font-family: 'Orbitron', 'Chakra Petch', sans-serif;
+  font-size: 0.46cqw;
+  text-align: center;
+  color: #7dd3fc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  line-height: 1.1;
+  padding-bottom: 2px;
+}
+
+/* Row 1 Headers (above Period 1: H and He) */
+.group-col-header.col-1 { grid-column: 1; grid-row: 1; }
+.group-col-header.col-18 { grid-column: 18; grid-row: 1; }
+
+/* Row 2 Headers (above Period 2: Be and B..F) */
+.group-col-header.col-2 { grid-column: 2; grid-row: 2; align-self: end; }
+.group-col-header.col-13 { grid-column: 13; grid-row: 2; align-self: end; }
+.group-col-header.col-14 { grid-column: 14; grid-row: 2; align-self: end; }
+.group-col-header.col-15 { grid-column: 15; grid-row: 2; align-self: end; }
+.group-col-header.col-16 { grid-column: 16; grid-row: 2; align-self: end; }
+.group-col-header.col-17 { grid-column: 17; grid-row: 2; align-self: end; }
+
+/* Row 4 Headers (directly above Period 4: Ti..Zn) */
+.group-col-header.col-4 { grid-column: 4; grid-row: 4; align-self: end; }
+.group-col-header.col-5 { grid-column: 5; grid-row: 4; align-self: end; }
+.group-col-header.col-6 { grid-column: 6; grid-row: 4; align-self: end; }
+.group-col-header.col-7 { grid-column: 7; grid-row: 4; align-self: end; }
+.group-col-header.col-8-10 { grid-column: 8 / span 3; grid-row: 4; align-self: end; }
+.group-col-header.col-11 { grid-column: 11; grid-row: 4; align-self: end; }
+.group-col-header.col-12 { grid-column: 12; grid-row: 4; align-self: end; }
+
+/* ==========================================================================
+   ELEMENT CELL STYLING (Near-square aspect-ratio: 1 / 0.95)
+   ========================================================================== */
+
+.element-cell {
+  position: relative;
+  aspect-ratio: 1 / 0.95;
+  width: 100%;
+  height: auto;
+  min-width: 0;
+  border-radius: 4px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  padding: 2px 2px 3px 2px;
+  cursor: pointer;
+  outline: none;
+  transition: transform 0.18s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.18s ease, border-color 0.18s ease;
+  box-sizing: border-box;
+}
+
+.element-cell:hover,
+.element-cell:focus-visible {
+  transform: scale(1.08);
+  z-index: 40;
+}
+
+.element-cell.is-active {
+  box-shadow: 0 0 16px currentColor !important;
+  transform: scale(1.06);
+  z-index: 35;
+}
+
+.cell-num {
+  align-self: flex-start;
+  font-size: 0.46cqw;
+  font-weight: 700;
+  line-height: 1;
+  padding-left: 2px;
+}
+
+.cell-sym {
+  font-family: 'Chakra Petch', 'Orbitron', sans-serif;
+  font-size: 1.5cqw;
+  font-weight: 700;
+  line-height: 1;
+  color: #ffffff;
+  text-shadow: 0 0 8px currentColor;
+  margin-top: -1px;
+}
+
+.cell-name {
+  font-size: 0.55cqw;
+  font-weight: 600;
+  line-height: 1.1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 96%;
+  text-align: center;
+}
+
+.cell-mass {
+  font-size: 0.44cqw;
+  line-height: 1;
+  opacity: 0.88;
+}
+
+/* Category: Metal (Kim loại #2de2e6) */
+.element-cell.metal {
+  border: 1px solid rgba(45, 226, 230, 0.8);
+  background: rgba(45, 226, 230, 0.12);
+  color: #2de2e6;
+  box-shadow: inset 0 0 6px rgba(45, 226, 230, 0.1);
+}
+.element-cell.metal .cell-name { color: #a5f3fc; }
+.element-cell.metal .cell-mass { color: #67e8f9; }
+.element-cell.metal:hover,
+.element-cell.metal:focus-visible {
+  background: rgba(45, 226, 230, 0.28);
+  border-color: #2de2e6;
+  box-shadow: 0 0 16px #2de2e6;
+}
+
+/* Category: Non-Metal (Phi kim #ff4fa3) */
+.element-cell.nonmetal {
+  border: 1px solid rgba(255, 79, 163, 0.8);
+  background: rgba(255, 79, 163, 0.12);
+  color: #ff4fa3;
+  box-shadow: inset 0 0 6px rgba(255, 79, 163, 0.1);
+}
+.element-cell.nonmetal .cell-name { color: #ffd1e8; }
+.element-cell.nonmetal .cell-mass { color: #ff9ecf; }
+.element-cell.nonmetal:hover,
+.element-cell.nonmetal:focus-visible {
+  background: rgba(255, 79, 163, 0.28);
+  border-color: #ff4fa3;
+  box-shadow: 0 0 16px #ff4fa3;
+}
+
+/* Category: Noble Gas (Khí hiếm #ffc83d) */
+.element-cell.noble {
+  border: 1px solid rgba(255, 200, 61, 0.85);
+  background: rgba(255, 200, 61, 0.12);
+  color: #ffc83d;
+  box-shadow: inset 0 0 6px rgba(255, 200, 61, 0.1);
+}
+.element-cell.noble .cell-name { color: #feefc3; }
+.element-cell.noble .cell-mass { color: #fde68a; }
+.element-cell.noble:hover,
+.element-cell.noble:focus-visible {
+  background: rgba(255, 200, 61, 0.28);
+  border-color: #ffc83d;
+  box-shadow: 0 0 16px #ffc83d;
+}
+
+/* Special Series Markers (57-71 Lanthanide & 89-103 Actinide) */
+.element-cell.series-marker {
+  cursor: default;
+  justify-content: center;
+  gap: 2px;
+  border-style: dashed;
+}
+.marker-range {
+  font-size: 0.52cqw;
+  font-weight: 700;
+  line-height: 1;
+}
+.marker-title {
+  font-size: 0.44cqw;
+  line-height: 1;
+}
+
+/* Cell Tooltip on Hover */
+.cell-tooltip {
+  position: absolute;
+  bottom: 105%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 15, 30, 0.95);
+  border: 1px solid #2de2e6;
+  border-radius: 4px;
+  padding: 4px 8px;
+  font-size: 0.45cqw;
+  color: #fff;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.15s ease;
+  z-index: 100;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.85);
+}
+.element-cell:hover .cell-tooltip,
+.element-cell:focus-visible .cell-tooltip {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* ==========================================================================
+   F-BLOCK: LANTHANIDES & ACTINIDES ROWS (Matched to 18-col grid)
+   ========================================================================== */
+
+.f-block-subtable {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 4px;
+  width: 100%;
+}
+
+.f-row {
+  display: grid;
+  grid-template-columns: repeat(18, 1fr);
+  gap: 4px;
+  align-items: center;
+}
+
+.f-row-header {
+  grid-column: 1 / span 2;
+  font-family: 'Orbitron', 'Chakra Petch', sans-serif;
+  font-size: 0.52cqw;
+  font-weight: 700;
+  color: #7dd3fc;
+  text-align: right;
+  padding-right: 6px;
+  letter-spacing: 0.04cqw;
+}
+
+.f-cells-strip {
+  grid-column: 3 / span 15;
+  display: grid;
+  grid-template-columns: repeat(15, 1fr);
+  gap: 4px;
+}
+
+.f-cells-strip .element-cell {
+  aspect-ratio: 1 / 0.95;
+  width: 100%;
+  height: auto;
+}
+
+/* ==========================================================================
+   TABLE LEGEND (BOTTOM-LEFT)
+   ========================================================================== */
+
+.hologram-legend {
+  position: absolute;
+  bottom: 0px;
+  left: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3cqh;
+  background: rgba(0, 20, 36, 0.82);
+  border: 1px solid rgba(45, 226, 230, 0.45);
+  border-radius: 4px;
+  padding: 0.4cqh 0.6cqw;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  z-index: 20;
+}
+
+.legend-entry {
+  display: flex;
+  align-items: center;
+  gap: 0.4cqw;
+}
+
+.legend-chip {
+  width: 0.8cqw;
+  height: 0.8cqw;
+  min-width: 10px;
+  min-height: 10px;
+  border-radius: 2px;
+}
+
+.chip-metal {
+  border: 1.5px solid #2de2e6;
+  background: rgba(45, 226, 230, 0.3);
+  box-shadow: 0 0 6px #2de2e6;
+}
+
+.chip-nonmetal {
+  border: 1.5px solid #ff4fa3;
+  background: rgba(255, 79, 163, 0.3);
+  box-shadow: 0 0 6px #ff4fa3;
+}
+
+.chip-noble {
+  border: 1.5px solid #ffc83d;
+  background: rgba(255, 200, 61, 0.3);
+  box-shadow: 0 0 6px #ffc83d;
+}
+
+.legend-text {
+  font-size: 0.48cqw;
+  font-weight: 600;
+  color: #e2e8f0;
+}
+
+/* ==========================================================================
+   DEBUG CONTROLS PANEL (Visible when URL has ?debug)
+   ========================================================================== */
+
+.debug-controls-panel {
+  position: fixed;
+  bottom: 24px;
+  left: 24px;
+  z-index: 9999;
+  width: 290px;
+  background: rgba(4, 18, 32, 0.94);
+  border: 1.5px solid #2de2e6;
+  border-radius: 10px;
+  padding: 16px;
+  box-shadow: 0 10px 35px rgba(0, 0, 0, 0.85), 0 0 20px rgba(45, 226, 230, 0.35);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  color: #e2e8f0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  user-select: none;
+}
+
+.debug-title {
+  font-family: 'Orbitron', 'Chakra Petch', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  color: #2de2e6;
+  margin-bottom: 12px;
+  text-shadow: 0 0 8px rgba(45, 226, 230, 0.6);
+  letter-spacing: 0.5px;
+}
+
+.debug-row {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 10px;
+}
+
+.debug-row label {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  font-weight: 500;
+  color: #94a3b8;
+}
+
+.debug-row label span {
+  font-weight: 700;
+  color: #38bdf8;
+  font-family: monospace;
+}
+
+.debug-row input[type="range"] {
+  width: 100%;
+  accent-color: #2de2e6;
+  cursor: pointer;
+}
+
+.debug-copy-btn {
+  width: 100%;
+  margin-top: 10px;
+  padding: 10px 14px;
+  background: rgba(45, 226, 230, 0.15);
+  border: 1.5px solid #2de2e6;
+  border-radius: 6px;
+  color: #2de2e6;
+  font-family: 'Orbitron', 'Chakra Petch', sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  letter-spacing: 0.5px;
+  transition: all 0.2s ease;
+  box-shadow: 0 0 10px rgba(45, 226, 230, 0.2);
+}
+
+.debug-copy-btn:hover {
+  background: #2de2e6;
+  color: #02121f;
+  box-shadow: 0 0 18px rgba(45, 226, 230, 0.6);
+  transform: translateY(-1px);
+}
+
+.debug-copy-btn.copied {
+  background: #10b981;
+  border-color: #10b981;
+  color: #ffffff;
+  box-shadow: 0 0 18px rgba(16, 185, 129, 0.6);
+}
