@@ -100,6 +100,13 @@ export default function ElementModal({ element, onClose, onSelectElement }) {
   const primaryName = element.name || element.nameEn;
   const hasAltName = element.nameVi && element.nameVi.toLowerCase() !== primaryName.toLowerCase();
 
+  // Resolve base URL for specimens when deployed to GitHub Pages (subpath /Chemistry/)
+  const getFullSpecimenSrc = useCallback((src) => {
+    if (!src) return '';
+    const base = import.meta.env.BASE_URL || '/';
+    return src.startsWith('/') ? `${base.replace(/\/$/, '')}${src}` : src;
+  }, []);
+
   const shells = useMemo(() => getElementShells(element.atomicNumber), [element.atomicNumber]);
   const neutrons = useMemo(() => getNeutronCount(element.atomicNumber, element.atomicMass), [element.atomicNumber, element.atomicMass]);
   const valenceElectrons = shells[shells.length - 1];
@@ -202,7 +209,7 @@ export default function ElementModal({ element, onClose, onSelectElement }) {
                       {/* Specimen Real Image (Static Clean Hologram) */}
                       <img
                         key={element.atomicNumber}
-                        src={specimen.src}
+                        src={getFullSpecimenSrc(specimen.src)}
                         alt={`Mẫu vật ${primaryName} (${element.atomicNumber})`}
                         loading="lazy"
                         decoding="async"
@@ -590,7 +597,7 @@ export default function ElementModal({ element, onClose, onSelectElement }) {
             
             <div className="lightbox-img-wrapper">
               <img 
-                src={specimen.src} 
+                src={getFullSpecimenSrc(specimen.src)} 
                 alt={`Mẫu vật ${primaryName}`} 
                 className="lightbox-img" 
               />
