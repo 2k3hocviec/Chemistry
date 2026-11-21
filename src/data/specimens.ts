@@ -7,6 +7,13 @@ export interface SpecimenInfo {
 }
 
 export const SPECIMENS: Record<number, SpecimenInfo> = {
+  3: {
+    src: '/specimens/3.webp',
+    credit: 'AdvancedTinkering',
+    license: 'CC BY-SA 4.0',
+    sourceUrl: 'https://commons.wikimedia.org/wiki/File:Purified_lithium_in_an_ampoule_under_argon,_dark_background.png',
+    note: 'Lithium chưng cất chân không trong ống thủy tinh khí Argon'
+  },
   27: {
     src: '/specimens/27.webp',
     credit: 'Alchemist-hp (pse-mendelejew.de)',
