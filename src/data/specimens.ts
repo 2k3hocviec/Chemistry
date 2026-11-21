@@ -14,6 +14,13 @@ export const SPECIMENS: Record<number, SpecimenInfo> = {
     sourceUrl: 'https://commons.wikimedia.org/wiki/File:Purified_lithium_in_an_ampoule_under_argon,_dark_background.png',
     note: 'Lithium chưng cất chân không trong ống thủy tinh khí Argon'
   },
+  4: {
+    src: '/specimens/4.webp',
+    credit: 'Alchemist-hp (pse-mendelejew.de)',
+    license: 'FAL / CC BY-SA 3.0',
+    sourceUrl: 'https://commons.wikimedia.org/wiki/File:Be-140g.jpg',
+    note: 'Mảnh tinh thể Beryllium nguyên chất (>99%, >140g)'
+  },
   27: {
     src: '/specimens/27.webp',
     credit: 'Alchemist-hp (pse-mendelejew.de)',
