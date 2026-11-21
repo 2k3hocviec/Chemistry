@@ -2,7 +2,7 @@
    HOLOGRAPHIC ELEMENT DESCRIPTION MODAL STYLING
    ========================================================================== */
 
-/* Fullscreen frosted glass backdrop */
+/* Fullscreen transparent backdrop - hoàn toàn trong suốt để thấy rõ trọn vẹn vũ trụ & phi hành gia ở sau */
 .holo-modal-backdrop {
   position: fixed;
   inset: 0;
@@ -10,11 +10,26 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(1, 8, 16, 0.72);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
+  background: transparent;
   padding: 16px;
   animation: modalFadeIn 0.2s ease-out;
+}
+
+/* Wrapper không tạo nền đen che khuất phía sau */
+.modal-fire-wrapper {
+  position: relative;
+  background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Lớp Canvas Lửa Tự Nhiên Ngoài Viền (100% trong suốt, không nền đen, không viền cắt thẳng) */
+.fire-canvas-overlay {
+  position: absolute;
+  pointer-events: none;
+  z-index: 1; /* Nằm dưới .holo-modal-card (z-index: 10) để ngọn lửa chỉ bốc từ mép ngoài ra ngoài */
+  background: transparent;
 }
 
 @keyframes modalFadeIn {
@@ -25,6 +40,7 @@
 /* Hologram Dossier Window */
 .holo-modal-card {
   position: relative;
+  z-index: 10;
   width: min(980px, 94vw);
   height: min(720px, 90vh);
   max-height: 90vh;

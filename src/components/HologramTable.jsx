@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { ELEMENTS } from '../data/elements';
 import ElementModal from './ElementModal';
+import { soundEffects } from '../utils/soundEffects';
 import './HologramTable.css';
 
 export default function HologramTable({ isFullscreen = false }) {
@@ -193,6 +194,7 @@ transform-style: preserve-3d;`;
             <div 
               className="carbon-box"
               onClick={() => setSelectedElement(ELEMENTS.find(e => e.atomicNumber === 6))}
+              onMouseEnter={() => soundEffects.playHover()}
               role="button"
               tabIndex={0}
               title="Nhấp để xem mô tả chi tiết nguyên tố Carbon"
@@ -263,6 +265,7 @@ transform-style: preserve-3d;`;
                   className={`element-cell ${el.category} ${selectedElement?.atomicNumber === el.atomicNumber ? 'is-active' : ''}`}
                   style={cellStyle}
                   onClick={() => setSelectedElement(el)}
+                  onMouseEnter={() => soundEffects.playHover()}
                   onKeyDown={(e) => handleCellKeyDown(e, el)}
                   tabIndex={0}
                   role="button"
@@ -311,6 +314,7 @@ transform-style: preserve-3d;`;
                       key={el.atomicNumber}
                       className={`element-cell ${el.category} ${selectedElement?.atomicNumber === el.atomicNumber ? 'is-active' : ''}`}
                       onClick={() => setSelectedElement(el)}
+                      onMouseEnter={() => soundEffects.playHover()}
                       onKeyDown={(e) => handleCellKeyDown(e, el)}
                       tabIndex={0}
                       role="button"
@@ -341,6 +345,7 @@ transform-style: preserve-3d;`;
                       key={el.atomicNumber}
                       className={`element-cell ${el.category} ${selectedElement?.atomicNumber === el.atomicNumber ? 'is-active' : ''}`}
                       onClick={() => setSelectedElement(el)}
+                      onMouseEnter={() => soundEffects.playHover()}
                       onKeyDown={(e) => handleCellKeyDown(e, el)}
                       tabIndex={0}
                       role="button"

@@ -5,6 +5,8 @@ import { getElementShells, SHELL_LETTERS, getNeutronCount } from '../data/electr
 import { getElementProperties } from '../data/elementProperties';
 import { getElementDossier } from '../data/elementDossiers';
 import AtomBohrVisualizer from './AtomBohrVisualizer';
+import ModalFireBorder from './ModalFireBorder';
+import { soundEffects } from '../utils/soundEffects';
 import './ElementModal.css';
 
 export default function ElementModal({ element, onClose, onSelectElement }) {
@@ -59,27 +61,44 @@ export default function ElementModal({ element, onClose, onSelectElement }) {
     }
   }, []);
 
+  // Sound effects: ignition burst and gentle plasma ambience when modal opens
+  useEffect(() => {
+    soundEffects.playFireIgnition();
+    soundEffects.startFireAmbience();
+    return () => {
+      soundEffects.stopFireAmbience();
+    };
+  }, []);
+
   // Navigate to previous/next element
   const handlePrev = useCallback(() => {
+    soundEffects.playNavigate();
     const prevIndex = element.atomicNumber === 1 ? 118 : element.atomicNumber - 1;
     const prevEl = ELEMENTS.find((el) => el.atomicNumber === prevIndex);
     if (prevEl) onSelectElement(prevEl);
   }, [element, onSelectElement]);
 
   const handleNext = useCallback(() => {
+    soundEffects.playNavigate();
     const nextIndex = element.atomicNumber === 118 ? 1 : element.atomicNumber + 1;
     const nextEl = ELEMENTS.find((el) => el.atomicNumber === nextIndex);
     if (nextEl) onSelectElement(nextEl);
   }, [element, onSelectElement]);
+
+  const handleCloseModal = useCallback(() => {
+    soundEffects.playModalClose();
+    onClose();
+  }, [onClose]);
 
   // Keyboard navigation: Left/Right arrow and Escape
   useEffect(() => {
     const handleKeyDown = (e) => {
       if (e.key === 'Escape') {
         if (isLightboxOpen) {
+          soundEffects.playModalClose();
           setIsLightboxOpen(false);
         } else {
-          onClose();
+          handleCloseModal();
         }
       } else if (!isLightboxOpen) {
         if (e.key === 'ArrowLeft') {
@@ -93,7 +112,7 @@ export default function ElementModal({ element, onClose, onSelectElement }) {
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [onClose, handlePrev, handleNext, isLightboxOpen]);
+  }, [handleCloseModal, handlePrev, handleNext, isLightboxOpen]);
 
   const specimen = SPECIMENS[element.atomicNumber];
   const hasSpecimen = Boolean(specimen && !imgError);
@@ -116,16 +135,19 @@ export default function ElementModal({ element, onClose, onSelectElement }) {
     <>
       <div 
         className="holo-modal-backdrop" 
-        onClick={onClose}
+        onClick={handleCloseModal}
         role="presentation"
       >
-        <div 
-          className={`holo-modal-card ${element.category}`}
-          onClick={(e) => e.stopPropagation()}
-          role="dialog"
-          aria-modal="true"
-          aria-label={`Chi tiết nguyên tố ${primaryName} (${element.nameVi})`}
-        >
+        <div className={`modal-fire-wrapper ${element.category}`} onClick={(e) => e.stopPropagation()}>
+          {/* Lớp Canvas Lửa Tự Nhiên Ngoài Viền (100% trong suốt, không nền đen, không viền cắt) */}
+          <ModalFireBorder category={element.category} />
+
+          <div 
+            className={`holo-modal-card ${element.category}`}
+            role="dialog"
+            aria-modal="true"
+            aria-label={`Chi tiết nguyên tố ${primaryName} (${element.nameVi})`}
+          >
           {/* 4 Luminous Corner Markers */}
           <span className="corner-marker corner-tl" aria-hidden="true"></span>
           <span className="corner-marker corner-tr" aria-hidden="true"></span>
@@ -165,7 +187,7 @@ export default function ElementModal({ element, onClose, onSelectElement }) {
               <button 
                 type="button" 
                 className="modal-close-btn" 
-                onClick={onClose}
+                onClick={handleCloseModal}
                 title="Đóng bảng mô tả (Phím ESC)"
               >
                 ✕
@@ -193,11 +215,19 @@ export default function ElementModal({ element, onClose, onSelectElement }) {
                   <div className="specimen-zone">
                     <div 
                       className="specimen-card-frame"
-                      onClick={() => setIsLightboxOpen(true)}
+                      onClick={() => {
+                        soundEffects.playZoom();
+                        setIsLightboxOpen(true);
+                      }}
                       role="button"
                       tabIndex={0}
                       title="Nhấp để phóng to ảnh mẫu vật (ESC để đóng)"
-                      onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') setIsLightboxOpen(true); }}
+                      onKeyDown={(e) => { 
+                        if (e.key === 'Enter' || e.key === ' ') {
+                          soundEffects.playZoom();
+                          setIsLightboxOpen(true);
+                        }
+                      }}
                     >
                       {/* Skeleton Shimmer */}
                       {!imgLoaded && (
@@ -289,7 +319,10 @@ export default function ElementModal({ element, onClose, onSelectElement }) {
                   role="tab"
                   aria-selected={activeTab === 'overview'}
                   className={`modal-tab-btn ${activeTab === 'overview' ? 'active' : ''}`}
-                  onClick={() => setActiveTab('overview')}
+                  onClick={() => {
+                    if (activeTab !== 'overview') soundEffects.playTabSwitch();
+                    setActiveTab('overview');
+                  }}
                 >
                   📖 Tổng quan & Không gian
                 </button>
@@ -298,7 +331,10 @@ export default function ElementModal({ element, onClose, onSelectElement }) {
                   role="tab"
                   aria-selected={activeTab === 'properties'}
                   className={`modal-tab-btn ${activeTab === 'properties' ? 'active' : ''}`}
-                  onClick={() => setActiveTab('properties')}
+                  onClick={() => {
+                    if (activeTab !== 'properties') soundEffects.playTabSwitch();
+                    setActiveTab('properties');
+                  }}
                 >
                   🔬 Tính chất Vật lý & Hóa học (Wiki)
                 </button>
@@ -307,7 +343,10 @@ export default function ElementModal({ element, onClose, onSelectElement }) {
                   role="tab"
                   aria-selected={activeTab === 'quantum'}
                   className={`modal-tab-btn ${activeTab === 'quantum' ? 'active' : ''}`}
-                  onClick={() => setActiveTab('quantum')}
+                  onClick={() => {
+                    if (activeTab !== 'quantum') soundEffects.playTabSwitch();
+                    setActiveTab('quantum');
+                  }}
                 >
                   ⚛ Cấu trúc Lượng tử
                 </button>
@@ -572,12 +611,16 @@ export default function ElementModal({ element, onClose, onSelectElement }) {
 
         </div>
       </div>
+    </div>
 
       {/* Lightbox Modal for Full-Size Specimen View */}
       {isLightboxOpen && hasSpecimen && (
         <div 
           className="specimen-lightbox-backdrop" 
-          onClick={() => setIsLightboxOpen(false)}
+          onClick={() => {
+            soundEffects.playModalClose();
+            setIsLightboxOpen(false);
+          }}
           role="dialog"
           aria-modal="true"
           aria-label={`Ảnh phóng to mẫu vật ${primaryName}`}
@@ -589,7 +632,10 @@ export default function ElementModal({ element, onClose, onSelectElement }) {
             <button 
               type="button" 
               className="lightbox-close-btn"
-              onClick={() => setIsLightboxOpen(false)}
+              onClick={() => {
+                soundEffects.playModalClose();
+                setIsLightboxOpen(false);
+              }}
               title="Đóng xem lớn (Phím ESC)"
             >
               ✕
